@@ -60,7 +60,7 @@ describe('Unit tests on field validation', () => {
     const clientUrl = 'https://nhost.io';
     const diffDomainUrl = 'https://myotherdomain.com'
     const host = 'host.com'
-    const allowedRedirectUrls = `https://*-nhost.vercel.app,${diffDomainUrl},https://*.${host},https://no-wildcard.io`;
+    const allowedRedirectUrls = `https://*-nhost.vercel.app,${diffDomainUrl},https://*.${host},https://no-wildcard.io,myapp://host`;
 
     beforeAll(async () => {
       await request.post('/change-env').send({
@@ -107,6 +107,10 @@ describe('Unit tests on field validation', () => {
       expect(redirectTo.validate(`https://subdomain.${host}#key=value`).error).toBeUndefined()
 
       expect(redirectTo.validate(`https://docs-ger4gr-nhost.vercel.app`).error).toBeUndefined()
+    });
+
+    it('should validate a custom scheme', () => {
+      expect(redirectTo.validate('myapp://host').error).toBeUndefined()
     });
 
     it('should reject a subsubdomain if no wildcard', () => {
